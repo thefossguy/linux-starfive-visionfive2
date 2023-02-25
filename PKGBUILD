@@ -10,12 +10,13 @@ license=(GPL2)
 makedepends=(
   bc libelf pahole cpio perl tar xz gettext
   xmlto python-sphinx python-sphinx_rtd_theme graphviz imagemagick texlive-latexextra
+  initramfs kmod
   git
 )
 options=('!strip')
 _srcname=archlinux-linux
 source=(riscv-makefile-and-config.patch)
-sha256sums=('1420680b53950203dbf8af3b259344898356f7844bff37fe2a918f2c2c33adaa29185af366b8a40769864228a9fae024308a4659c62ddf69a3b78b3d324e8635')
+sha512sums=('1420680b53950203dbf8af3b259344898356f7844bff37fe2a918f2c2c33adaa29185af366b8a40769864228a9fae024308a4659c62ddf69a3b78b3d324e8635')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
