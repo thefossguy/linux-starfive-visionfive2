@@ -41,7 +41,7 @@ prepare() {
   make mrproper
   make starfive_visionfive2_defconfig
 
-  # patch Makefile and .config
+  # patch and .config
   git apply ../02-defconfig.patch && echo ".config patched!"
 
   make -s kernelrelease > version
