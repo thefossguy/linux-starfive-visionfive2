@@ -35,14 +35,16 @@ prepare() {
   echo "${pkgbase#linux}" > localversion.20-pkgname
 
   echo "Setting config..."
-  [[ -f .config ]] && rm -v .config
-  git apply --check ../01-riscv-makefile.patch && git apply ../01-riscv-makefile.patch && echo "Makefile patched!"
-  make clean
-  make mrproper
-  make starfive_visionfive2_defconfig
+  if [[ ! -f build_complete ]]; then
+    [[ -f .config ]] && rm -v .config
+    git apply --check ../01-riscv-makefile.patch && git apply ../01-riscv-makefile.patch && echo "Makefile patched!"
+    make clean
+    make mrproper
+    make starfive_visionfive2_defconfig
 
-  # patch and .config
-  git apply ../02-defconfig.patch && echo ".config patched!"
+    # patch and .config
+    git apply ../02-defconfig.patch && echo ".config patched!"
+  fi
 
   make -s kernelrelease > version
   echo "Prepared $pkgbase version $(<version)"
@@ -50,7 +52,9 @@ prepare() {
 
 build() {
   cd $_srcname
-  ARCH=riscv CFLAGS="-march=rv64imafdc_zicsr_zba_zbb -mcpu=sifive-u74 -mtune=sifive-7-series -O2 -pipe" make htmldocs all -j$(nproc)
+  if [[ ! -f build_complete ]]; then
+    ARCH=riscv CFLAGS="-march=rv64imafdc_zicsr_zba_zbb -mcpu=sifive-u74 -mtune=sifive-7-series -O2 -pipe" make htmldocs all -j$(nproc) && touch build_complete
+  fi
 }
 
 _package() {
@@ -81,7 +85,8 @@ _package() {
   make INSTALL_DTBS_PATH="$pkgdir/usr/share/dtbs/$kernver" dtbs_install
 
   # remove build and source links
-  rm "$modulesdir"/{source,build}
+  [[ -d "$modulesdir"/build ]] && rm "$modulesdir"/build
+  [[ -d "$modulesdir"/source ]] && rm "$modulesdir"/source
 }
 
 _package-headers() {
