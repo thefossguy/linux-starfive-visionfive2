@@ -15,8 +15,10 @@ makedepends=(
 )
 options=('!strip')
 _srcname=archlinux-linux
-source=(riscv-makefile-and-config.patch)
-sha512sums=('1420680b53950203dbf8af3b259344898356f7844bff37fe2a918f2c2c33adaa29185af366b8a40769864228a9fae024308a4659c62ddf69a3b78b3d324e8635')
+source=(01-riscv-makefile.patch
+  02-defconfig.patch)
+sha512sums=('50006cd147adc770edb936afc3e31c8ac41ac9e2e3249e99aa8736b570cc2dbfb2366946bcfce98c086b7bbe7857093daead9f2136c9ac0225eec3f92c25ff92'
+  '24ab6432671c8f52510614b415d460c2b6ebf5303bb045f130def01785d30b1f3a4962610e05e94edfdb6f0da302f39ddf98c17187b3820f06a3b13daf52495e')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
@@ -34,12 +36,13 @@ prepare() {
 
   echo "Setting config..."
   [[ -f .config ]] && rm -v .config
+  git apply --check ../01-riscv-makefile.patch && git apply ../01-riscv-makefile.patch && echo "Makefile patched!"
   make clean
   make mrproper
   make starfive_visionfive2_defconfig
 
   # patch Makefile and .config
-  git apply --check "$pkgname-$pkgver"/riscv-makefile-and-config.patch && git apply "$pkgname-$pkgver"/riscv-makefile-and-config.patch
+  git apply ../02-defconfig.patch && echo ".config patched!"
 
   make -s kernelrelease > version
   echo "Prepared $pkgbase version $(<version)"
