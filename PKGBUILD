@@ -1,12 +1,11 @@
 # Maintainer: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
 
-pkgbase=linux
-pkgver=6.2.arch1
+pkgbase=linux-starfive-visionfive2
+pkgver=5.15.0.arch1
 pkgrel=1
 pkgdesc='Linux'
-_srctag=v${pkgver%.*}-${pkgver##*.}
-url="https://github.com/archlinux/linux/commits/$_srctag"
-arch=(x86_64)
+url="https://github.com/starfive-tech/linux/tree/JH7110_VisionFive2_devel"
+arch=(riscv64)
 license=(GPL2)
 makedepends=(
   bc libelf pahole cpio perl tar xz gettext
@@ -15,24 +14,16 @@ makedepends=(
 )
 options=('!strip')
 _srcname=archlinux-linux
-source=(
-  "$_srcname::git+https://github.com/archlinux/linux?signed#tag=$_srctag"
-  config         # the main kernel config file
-)
-validpgpkeys=(
-  'ABAF11C65A2970B130ABE3C479BE3E4300411886'  # Linus Torvalds
-  '647F28654894E3BD457199BE38DBBDC86092693E'  # Greg Kroah-Hartman
-  'A2FF3A36AAA56654109064AB19802F8B0D70FC30'  # Jan Alexander Steffens (heftig)
-  'C7E7849466FE2358343588377258734B41C31549'  # David Runge <dvzrv@archlinux.org>
-)
-sha256sums=('SKIP'
-            'a80dfd64eca60673422052ac4d1444b0f9495a588c2595d413fd0687f3786586')
+source=(riscv-makefile-and-config.patch)
+sha256sums=('1420680b53950203dbf8af3b259344898356f7844bff37fe2a918f2c2c33adaa29185af366b8a40769864228a9fae024308a4659c62ddf69a3b78b3d324e8635')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
 export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
 
 prepare() {
+  [[ -d "$_srcname" ]] || git clone --depth --branch JH7110_VisionFive2_devel \
+    "https://github.com/starfive-tech/linux.git"
   cd $_srcname
 
   echo "Setting version..."
@@ -40,19 +31,14 @@ prepare() {
   echo "-$pkgrel" > localversion.10-pkgrel
   echo "${pkgbase#linux}" > localversion.20-pkgname
 
-  local src
-  for src in "${source[@]}"; do
-    src="${src%%::*}"
-    src="${src##*/}"
-    [[ $src = *.patch ]] || continue
-    echo "Applying patch $src..."
-    patch -Np1 < "../$src"
-  done
-
   echo "Setting config..."
-  cp ../config .config
-  make olddefconfig
-  diff -u ../config .config || :
+  [[ -f .config ]] && rm -v .config
+  make clean
+  make mrproper
+  make starfive_visionfive2_defconfig
+
+  # patch Makefile and .config
+  git apply --check "$pkgname-$pkgver"/riscv-makefile-and-config.patch && git apply "$pkgname-$pkgver"/riscv-makefile-and-config.patch
 
   make -s kernelrelease > version
   echo "Prepared $pkgbase version $(<version)"
@@ -60,7 +46,7 @@ prepare() {
 
 build() {
   cd $_srcname
-  make htmldocs all
+  ARCH=riscv CFLAGS="-march=rv64imafdc_zicsr_zba_zbb -mcpu=sifive-u74 -mtune=sifive-7-series -O2 -pipe" make htmldocs all -j$(nproc)
 }
 
 _package() {
@@ -87,6 +73,9 @@ _package() {
   make INSTALL_MOD_PATH="$pkgdir/usr" INSTALL_MOD_STRIP=1 \
     DEPMOD=/doesnt/exist modules_install  # Suppress depmod
 
+  echo "Installing dtbs..."
+  make INSTALL_DTBS_PATH="$pkgdir/usr/share/dtbs/$kernver" dtbs_install
+
   # remove build and source links
   rm "$modulesdir"/{source,build}
 }
@@ -102,19 +91,16 @@ _package-headers() {
   install -Dt "$builddir" -m644 .config Makefile Module.symvers System.map \
     localversion.* version vmlinux
   install -Dt "$builddir/kernel" -m644 kernel/Makefile
-  install -Dt "$builddir/arch/x86" -m644 arch/x86/Makefile
+  install -Dt "$builddir/arch/riscv" -m644 arch/riscv/Makefile
   cp -t "$builddir" -a scripts
-
-  # required when STACK_VALIDATION is enabled
-  install -Dt "$builddir/tools/objtool" tools/objtool/objtool
 
   # required when DEBUG_INFO_BTF_MODULES is enabled
   install -Dt "$builddir/tools/bpf/resolve_btfids" tools/bpf/resolve_btfids/resolve_btfids
 
   echo "Installing headers..."
   cp -t "$builddir" -a include
-  cp -t "$builddir/arch/x86" -a arch/x86/include
-  install -Dt "$builddir/arch/x86/kernel" -m644 arch/x86/kernel/asm-offsets.s
+  cp -t "$builddir/arch/riscv" -a arch/riscv/include
+  install -Dt "$builddir/arch/riscv/kernel" -m644 arch/riscv/kernel/asm-offsets.s
 
   install -Dt "$builddir/drivers/md" -m644 drivers/md/*.h
   install -Dt "$builddir/net/mac80211" -m644 net/mac80211/*.h
@@ -136,7 +122,7 @@ _package-headers() {
   echo "Removing unneeded architectures..."
   local arch
   for arch in "$builddir"/arch/*/; do
-    [[ $arch = */x86/ ]] && continue
+    [[ $arch = */riscv/ ]] && continue
     echo "Removing $(basename "$arch")"
     rm -r "$arch"
   done
