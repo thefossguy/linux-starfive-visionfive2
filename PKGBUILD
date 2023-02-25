@@ -23,8 +23,8 @@ export KBUILD_BUILD_USER=$pkgbase
 export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
 
 prepare() {
-  [[ -d "$_srcname" ]] || git clone --depth --branch JH7110_VisionFive2_devel \
-    "https://github.com/starfive-tech/linux.git"
+  [[ -d "$_srcname" ]] || git clone --depth 1 --branch JH7110_VisionFive2_devel \
+    "https://github.com/starfive-tech/linux.git" "$_srcname"
   cd $_srcname
 
   echo "Setting version..."
