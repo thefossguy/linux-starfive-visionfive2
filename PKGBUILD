@@ -28,7 +28,6 @@ prepare() {
   [[ -d "$_srcname" ]] || git clone --depth 1 --branch JH7110_VisionFive2_devel \
     "https://github.com/starfive-tech/linux.git" "$_srcname"
   cd $_srcname
-  git revert 59cf9af678dbfa3d73f6cb86ed1ae7219da9f5c9
 
   echo "Setting version..."
   scripts/setlocalversion --save-scmversion
