@@ -18,7 +18,7 @@ _srcname=archlinux-linux
 source=(01-riscv-makefile.patch
   02-defconfig.patch)
 sha512sums=('50006cd147adc770edb936afc3e31c8ac41ac9e2e3249e99aa8736b570cc2dbfb2366946bcfce98c086b7bbe7857093daead9f2136c9ac0225eec3f92c25ff92'
-  '24ab6432671c8f52510614b415d460c2b6ebf5303bb045f130def01785d30b1f3a4962610e05e94edfdb6f0da302f39ddf98c17187b3820f06a3b13daf52495e')
+  '375a50e51099f2d54833cf7507bce7e8c3ba0b04ec3d6c82ce0d65913d509c23d77297834a16be4f1672a24d8d403c308b564a0fe4fb557965a5f7ea367d9514')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
