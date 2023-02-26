@@ -79,6 +79,7 @@ _package() {
 
   echo "Installing dtbs..."
   make INSTALL_DTBS_PATH="$pkgdir/usr/share/dtbs/$kernver" dtbs_install
+  make INSTALL_DTBS_PATH="$pkgdir/boot/dtbs" dtbs_install
 
   # remove build and source links
   [[ -d "$modulesdir"/build ]] && rm "$modulesdir"/build
