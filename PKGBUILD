@@ -36,7 +36,7 @@ prepare() {
 
   echo "Setting config..."
   [[ -f .config ]] && rm -v .config
-  git apply --check ../01-riscv-makefile.patch && git apply ../01-riscv-makefile.patch && echo "Makefile patched"
+  git apply --check ../01-riscv-makefile.patch 2> /dev/null && git apply ../01-riscv-makefile.patch && echo "Makefile patched"
   make clean
   make mrproper
   make starfive_visionfive2_defconfig
