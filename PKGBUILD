@@ -50,7 +50,7 @@ prepare() {
 
 build() {
   cd $_srcname
-  ARCH=riscv CFLAGS="-march=rv64imafdc_zicsr_zba_zbb -mcpu=sifive-u74 -mtune=sifive-7-series -O2 -pipe" make htmldocs all -j$(nproc)
+  ARCH=riscv CFLAGS="-march=rv64imafdc_zicsr_zba_zbb -mcpu=sifive-u74 -mtune=sifive-7-series -O2 -pipe" make all -j$(nproc)
 }
 
 _package() {
