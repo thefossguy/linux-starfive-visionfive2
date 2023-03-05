@@ -10,7 +10,7 @@ license=(GPL2)
 makedepends=(
   bc libelf pahole cpio perl tar xz gettext
   xmlto python-sphinx python-sphinx_rtd_theme graphviz imagemagick texlive-latexextra
-  initramfs kmod
+  coreutils kmod initramfs
   git
 )
 options=('!strip')
