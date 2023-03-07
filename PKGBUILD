@@ -20,6 +20,13 @@ source=(01-riscv-makefile.patch
 sha512sums=('50006cd147adc770edb936afc3e31c8ac41ac9e2e3249e99aa8736b570cc2dbfb2366946bcfce98c086b7bbe7857093daead9f2136c9ac0225eec3f92c25ff92'
   '12d6f609ef48e0e0503fa907b6d5b15114978648740a68dd03ccb5b8b97414bf50b6e8a45bdf16635a2583b6e24e80b6c011e6aa09caf17d72cc04be56c73f0d')
 
+if [ "$(uname -m)" != "riscv64" ]; then
+  makedepends+=(riscv64-linux-gnu-gcc)
+  export CARCH=riscv64
+  export CROSS_COMPILE=riscv64-linux-gnu-
+  alias strip=riscv64-linux-gnu-strip
+fi
+
 export ARCH=riscv
 export CFLAGS="-march=rv64imafdc_zicsr_zba_zbb -mcpu=sifive-u74 -mtune=sifive-7-series -O2 -pipe"
 export KBUILD_BUILD_HOST=archlinux
