@@ -34,6 +34,7 @@ export KBUILD_BUILD_USER=$pkgbase
 export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
 
 prepare() {
+  [[ -d "eswin_6600u" ]] || git clone --depth 1 https://github.com/eswincomputing/eswin_6600u
   [[ -d "$_srcname" ]] || git clone --depth 1 --branch JH7110_VisionFive2_devel \
     "https://github.com/starfive-tech/linux.git" "$_srcname"
   cd $_srcname
@@ -58,8 +59,14 @@ prepare() {
 }
 
 build() {
+  # make kernel
   cd $_srcname
   make all -j$(nproc)
+
+  # make the USB WiFi dongle driver
+  cd ../eswin_6600u
+  make KERNELDIR=../$_srcname KBUILDDIR=../$_srcname product=6600u
+  mv wlan_ecr6600u_usb.ko ../$_srcname/drivers/net/wireless/eswin/wlan_ecr6600u_usb.ko
 }
 
 _package() {
