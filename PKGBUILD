@@ -24,7 +24,9 @@ if [ "$(uname -m)" != "riscv64" ]; then
   makedepends+=(riscv64-linux-gnu-gcc)
   export CARCH=riscv64
   export CROSS_COMPILE=riscv64-linux-gnu-
-  alias strip=riscv64-linux-gnu-strip
+  export X_STRIP=riscv64-linux-gnu-strip
+else
+  export X_STRIP=strip
 fi
 
 export ARCH=riscv
@@ -172,7 +174,7 @@ _package-headers() {
   done < <(find "$builddir" -type f -perm -u+x ! -name vmlinux -print0)
 
   echo "Stripping vmlinux..."
-  strip -v $STRIP_STATIC "$builddir/vmlinux"
+  $X_STRIP -v $STRIP_STATIC "$builddir/vmlinux"
 
   echo "Adding symlink..."
   mkdir -p "$pkgdir/usr/src"
