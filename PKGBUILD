@@ -18,7 +18,7 @@ _srcname=archlinux-linux
 source=(01-riscv-makefile.patch
   02-defconfig.patch)
 sha512sums=('50006cd147adc770edb936afc3e31c8ac41ac9e2e3249e99aa8736b570cc2dbfb2366946bcfce98c086b7bbe7857093daead9f2136c9ac0225eec3f92c25ff92'
-  '12d6f609ef48e0e0503fa907b6d5b15114978648740a68dd03ccb5b8b97414bf50b6e8a45bdf16635a2583b6e24e80b6c011e6aa09caf17d72cc04be56c73f0d')
+  '0bd5b48545c5dbb972d6f40fd5f0ff84cc3b90585d20a01dc9b4cbf4acff128b406ec1d2a23d33de616ad7ed19dca8dbd654d7b2e377ba0cde50c3293027a0de')
 
 if [ "$(uname -m)" != "riscv64" ]; then
   makedepends+=(riscv64-linux-gnu-gcc)
