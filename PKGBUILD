@@ -2,7 +2,7 @@
 
 pkgbase=linux-starfive-visionfive2
 pkgver=5.15.0.arch1
-pkgrel=1
+pkgrel=2
 pkgdesc='Linux'
 url="https://github.com/starfive-tech/linux/tree/JH7110_VisionFive2_devel"
 arch=(riscv64)
@@ -18,7 +18,7 @@ _srcname=archlinux-linux
 source=(01-riscv-makefile.patch
   02-defconfig.patch)
 sha512sums=('50006cd147adc770edb936afc3e31c8ac41ac9e2e3249e99aa8736b570cc2dbfb2366946bcfce98c086b7bbe7857093daead9f2136c9ac0225eec3f92c25ff92'
-  '0bd5b48545c5dbb972d6f40fd5f0ff84cc3b90585d20a01dc9b4cbf4acff128b406ec1d2a23d33de616ad7ed19dca8dbd654d7b2e377ba0cde50c3293027a0de')
+  'bece8d33d38700ef44de20e75de36fe9d8195aa1d88a94bab7744e7e40d66c90bec825bdecb2a79e0a9b7dbfdb685be30c83d3bc774d9bc501cd15db4f136fd0')
 
 if [ "$(uname -m)" != "riscv64" ]; then
   makedepends+=(riscv64-linux-gnu-gcc)
