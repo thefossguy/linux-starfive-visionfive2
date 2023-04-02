@@ -1,8 +1,6 @@
-# Maintainer: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
-
 pkgbase=linux-starfive-visionfive2
 pkgver=5.15.0.arch1
-pkgrel=2
+pkgrel=3
 pkgdesc='Linux'
 url="https://github.com/starfive-tech/linux/tree/JH7110_VisionFive2_devel"
 arch=(riscv64)
@@ -37,7 +35,7 @@ export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EP
 
 prepare() {
   [[ -d "eswin_6600u" ]] || git clone --depth 1 https://github.com/eswincomputing/eswin_6600u
-  [[ -d "$_srcname" ]] || git clone --depth 1 --branch JH7110_VisionFive2_devel \
+  [[ -d "$_srcname" ]] || git clone --depth 1 --branch "VF2_v2.11.5" \
     "https://github.com/starfive-tech/linux.git" "$_srcname"
   cd $_srcname
 
