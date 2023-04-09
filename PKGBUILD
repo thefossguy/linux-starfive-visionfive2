@@ -39,6 +39,13 @@ prepare() {
     "https://github.com/starfive-tech/linux.git" "$_srcname"
   cd $_srcname
 
+  # cleanup before pulling
+  make clean
+  make mrproper
+
+  # make sure we have the most up-to-date sources
+  git fetch && git pull
+
   echo "Setting version..."
   scripts/setlocalversion --save-scmversion
   echo "-$pkgrel" > localversion.10-pkgrel
@@ -47,8 +54,6 @@ prepare() {
   echo "Setting config..."
   [[ -f .config ]] && rm -v .config
   git apply --check ../01-riscv-makefile.patch 2> /dev/null && git apply ../01-riscv-makefile.patch && echo "Makefile patched"
-  make clean
-  make mrproper
   make starfive_visionfive2_defconfig
 
   # patch and .config
