@@ -13,9 +13,11 @@ makedepends=(
 options=('!strip')
 _srcname=archlinux-linux
 source=(01-riscv-makefile.patch
-  02-defconfig.patch)
+  02-defconfig.patch
+  03-vf2-memory-fix.patch)
 sha512sums=('50006cd147adc770edb936afc3e31c8ac41ac9e2e3249e99aa8736b570cc2dbfb2366946bcfce98c086b7bbe7857093daead9f2136c9ac0225eec3f92c25ff92'
-  'bece8d33d38700ef44de20e75de36fe9d8195aa1d88a94bab7744e7e40d66c90bec825bdecb2a79e0a9b7dbfdb685be30c83d3bc774d9bc501cd15db4f136fd0')
+  'bece8d33d38700ef44de20e75de36fe9d8195aa1d88a94bab7744e7e40d66c90bec825bdecb2a79e0a9b7dbfdb685be30c83d3bc774d9bc501cd15db4f136fd0'
+  'a14baa2eb78cc090a9e22d1b2748ab31b0df687e82e9112a7abebcd8ba513fd046deec867de384b38c25a1ffa4f323bf7e5459e1b9a01acb0e187a7bcb64ce9d')
 
 if [ "$(uname -m)" != "riscv64" ]; then
   makedepends+=(riscv64-linux-gnu-gcc)
@@ -53,6 +55,7 @@ prepare() {
   echo "Setting config..."
   [[ -f .config ]] && rm -v .config
   git apply --check ../01-riscv-makefile.patch 2> /dev/null && git apply ../01-riscv-makefile.patch && echo "Makefile patched"
+  git apply --check ../03-vf2-memory-fix.patch 2> /dev/null && git apply ../03-vf2-memory-fix.patch && echo "DTSI patched"
   make starfive_visionfive2_defconfig
 
   # patch and .config
