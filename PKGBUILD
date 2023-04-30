@@ -1,6 +1,6 @@
 pkgbase=linux-starfive-visionfive2
 pkgver=5.15.0.arch1
-pkgrel=3
+pkgrel=4
 pkgdesc='Linux'
 url="https://github.com/starfive-tech/linux/tree/VF2_v2.11.5"
 arch=(riscv64)
