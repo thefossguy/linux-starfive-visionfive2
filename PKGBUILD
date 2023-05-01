@@ -1,8 +1,8 @@
 pkgbase=linux-starfive-visionfive2
-pkgver=5.15.0.arch1
-pkgrel=4
+pkgver=6.4.arch1
+pkgrel=1
 pkgdesc='Linux'
-url="https://github.com/starfive-tech/linux/tree/VF2_v2.11.5"
+url="https://github.com/torvalds/linux/"
 arch=(riscv64)
 license=(GPL2)
 makedepends=(
@@ -12,12 +12,8 @@ makedepends=(
 )
 options=('!strip')
 _srcname=archlinux-linux
-source=(01-riscv-makefile.patch
-  02-defconfig.patch
-  03-vf2-memory-fix.patch)
-sha512sums=('50006cd147adc770edb936afc3e31c8ac41ac9e2e3249e99aa8736b570cc2dbfb2366946bcfce98c086b7bbe7857093daead9f2136c9ac0225eec3f92c25ff92'
-  'bece8d33d38700ef44de20e75de36fe9d8195aa1d88a94bab7744e7e40d66c90bec825bdecb2a79e0a9b7dbfdb685be30c83d3bc774d9bc501cd15db4f136fd0'
-  'a14baa2eb78cc090a9e22d1b2748ab31b0df687e82e9112a7abebcd8ba513fd046deec867de384b38c25a1ffa4f323bf7e5459e1b9a01acb0e187a7bcb64ce9d')
+source=()
+sha512sums=()
 
 if [ "$(uname -m)" != "riscv64" ]; then
   makedepends+=(riscv64-linux-gnu-gcc)
@@ -35,9 +31,9 @@ export KBUILD_BUILD_USER=$pkgbase
 export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
 
 prepare() {
-  [[ -d "eswin_6600u" ]] || git clone --depth 1 https://github.com/eswincomputing/eswin_6600u
-  [[ -d "$_srcname" ]] || git clone --depth 1 --branch "VF2_v2.11.5" \
-    "https://github.com/starfive-tech/linux.git" "$_srcname"
+  #[[ -d "eswin_6600u" ]] || git clone --depth 1 https://github.com/eswincomputing/eswin_6600u
+  [[ -d "$_srcname" ]] || git clone --depth 1 --branch "master" \
+    "https://github.com/torvalds/linux/" "$_srcname"
   cd $_srcname
 
   # cleanup before pulling
@@ -48,18 +44,19 @@ prepare() {
   git fetch && git pull
 
   echo "Setting version..."
-  scripts/setlocalversion --save-scmversion
+  #scripts/setlocalversion --save-scmversion
   echo "-$pkgrel" > localversion.10-pkgrel
   echo "${pkgbase#linux}" > localversion.20-pkgname
 
   echo "Setting config..."
   [[ -f .config ]] && rm -v .config
-  git apply --check ../01-riscv-makefile.patch 2> /dev/null && git apply ../01-riscv-makefile.patch && echo "Makefile patched"
-  git apply --check ../03-vf2-memory-fix.patch 2> /dev/null && git apply ../03-vf2-memory-fix.patch && echo "DTSI patched"
-  make starfive_visionfive2_defconfig
+  make defconfig
 
-  # patch and .config
-  git apply ../02-defconfig.patch && echo ".config patched"
+  # ensure some necessary options are enabled
+  NECESSARY_CONFIG_OPTIONS=("SOC_STARFIVE=", "CLK_STARFIVE_JH7110_SYS=", "PINCTRL_STARFIVE_JH7110_SYS=", "SERIAL_8250_DW=", "MMC_DW_STARFIVE=", "DWMAC_STARFIVE=")
+  for CFG_OPTION in ${NECESSARY_CONFIG_OPTIONS[@]}; do
+    grep "CONFIG_${CFG_OPTION}" .config 2> /dev/null || (echo "ERROR: config option ${CFG_OPTION} not found" && exit 1)
+  done
 
   make -s kernelrelease > version
   echo "Prepared $pkgbase version $(<version)"
@@ -71,9 +68,9 @@ build() {
   make all -j$(nproc)
 
   # make the USB WiFi dongle driver
-  cd ../eswin_6600u
-  make KERNELDIR=../$_srcname KBUILDDIR=../$_srcname product=6600u
-  mv wlan_ecr6600u_usb.ko ../$_srcname/drivers/net/wireless/eswin/wlan_ecr6600u_usb.ko
+  #cd ../eswin_6600u
+  #make KERNELDIR=../$_srcname KBUILDDIR=../$_srcname product=6600u
+  #mv wlan_ecr6600u_usb.ko ../$_srcname/drivers/net/wireless/eswin/wlan_ecr6600u_usb.ko
 }
 
 _package() {
