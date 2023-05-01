@@ -104,6 +104,9 @@ _package() {
   echo "Installing dtbs..."
   make INSTALL_DTBS_PATH="$pkgdir/usr/share/dtbs/$kernver" dtbs_install
   make INSTALL_DTBS_PATH="$pkgdir/boot/dtbs" dtbs_install
+  # TODO: remove this once the firmware is ready
+  cp "$pkgdir/boot/dtbs/starfive/jh7110-starfive-visionfive-2-v1.3b.dtb" \
+    "$pkgdir/boot/dtbs/starfive/jh7110-visionfive-v2.dtb"
 
   # remove build links
   [ -d "$modulesdir"/build ] && rm -rf "$modulesdir"/build
