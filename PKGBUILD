@@ -37,11 +37,14 @@ prepare() {
   cd $_srcname
 
   # cleanup before pulling
+  echo "Cleaning residue from a previous build..."
   make clean
   make mrproper
 
   # make sure we have the most up-to-date sources
-  git fetch && git pull
+  echo "Making sure that the sources are up-to-date..."
+  git fetch
+  git pull
 
   echo "Setting version..."
   #scripts/setlocalversion --save-scmversion
@@ -49,9 +52,9 @@ prepare() {
   echo "${pkgbase#linux}" > localversion.20-pkgname
 
   echo "Setting config..."
-  [[ -f .config ]] && rm -v .config
   cp ../config .config
   make olddefconfig
+  diff -u ../config .config || :
 
   # ensure some necessary options are enabled
   NECESSARY_CONFIG_OPTIONS=(CONFIG_SOC_STARFIVE=y CONFIG_CLK_STARFIVE_JH7110_SYS=y CONFIG_PINCTRL_STARFIVE_JH7110_SYS=y CONFIG_SERIAL_8250_DW=y CONFIG_MMC_DW_STARFIVE=y CONFIG_DWMAC_STARFIVE=m)
