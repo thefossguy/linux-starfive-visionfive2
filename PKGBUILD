@@ -12,8 +12,8 @@ makedepends=(
 )
 options=('!strip')
 _srcname=archlinux-linux
-source=()
-sha512sums=()
+source=('config')
+sha512sums=('52d87b89a8af47b3d42a94f93e6853349d21c8258b8b85ca62f9edc1be43bd3b2b65c1a607cbf5020d3c4e038704a1425bd2c74b84d352d8d76a16dd7a46c08d')
 
 if [ "$(uname -m)" != "riscv64" ]; then
   makedepends+=(riscv64-linux-gnu-gcc)
@@ -53,9 +53,9 @@ prepare() {
   make defconfig
 
   # ensure some necessary options are enabled
-  NECESSARY_CONFIG_OPTIONS=("SOC_STARFIVE=", "CLK_STARFIVE_JH7110_SYS=", "PINCTRL_STARFIVE_JH7110_SYS=", "SERIAL_8250_DW=", "MMC_DW_STARFIVE=", "DWMAC_STARFIVE=")
+  NECESSARY_CONFIG_OPTIONS=("CONFIG_SOC_STARFIVE=y", "CONFIG_CLK_STARFIVE_JH7110_SYS=y", "CONFIG_PINCTRL_STARFIVE_JH7110_SYS=y", "CONFIG_SERIAL_8250_DW=y", "MMC_DW_STARFIVE", "CONFIG_DWMAC_STARFIVE=m")
   for CFG_OPTION in ${NECESSARY_CONFIG_OPTIONS[@]}; do
-    grep "CONFIG_${CFG_OPTION}" .config 2> /dev/null || (echo "ERROR: config option ${CFG_OPTION} not found" && exit 1)
+    grep "${CFG_OPTION}" .config 2> /dev/null || (echo "ERROR: config option ${CFG_OPTION} not found" && exit 1)
   done
 
   make -s kernelrelease > version
