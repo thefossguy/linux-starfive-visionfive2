@@ -1,5 +1,5 @@
 pkgbase=linux-starfive-visionfive2
-pkgver=6.4.arch1
+pkgver=6.4.rc1.arch1
 pkgrel=1
 pkgdesc='Linux'
 url="https://github.com/torvalds/linux/"
@@ -32,7 +32,7 @@ export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EP
 
 prepare() {
   #[[ -d "eswin_6600u" ]] || git clone --depth 1 https://github.com/eswincomputing/eswin_6600u
-  [[ -d "$_srcname" ]] || git clone --depth 1 --branch "master" \
+  [[ -d "$_srcname" ]] || git clone --depth 1 --branch "v6.4-rc1" \
     "https://github.com/torvalds/linux/" "$_srcname"
   cd $_srcname
 
