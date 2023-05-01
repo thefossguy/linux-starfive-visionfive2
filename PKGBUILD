@@ -50,10 +50,11 @@ prepare() {
 
   echo "Setting config..."
   [[ -f .config ]] && rm -v .config
-  make defconfig
+  cp ../config .config
+  make olddefconfig
 
   # ensure some necessary options are enabled
-  NECESSARY_CONFIG_OPTIONS=("CONFIG_SOC_STARFIVE=y", "CONFIG_CLK_STARFIVE_JH7110_SYS=y", "CONFIG_PINCTRL_STARFIVE_JH7110_SYS=y", "CONFIG_SERIAL_8250_DW=y", "MMC_DW_STARFIVE", "CONFIG_DWMAC_STARFIVE=m")
+  NECESSARY_CONFIG_OPTIONS=(CONFIG_SOC_STARFIVE=y CONFIG_CLK_STARFIVE_JH7110_SYS=y CONFIG_PINCTRL_STARFIVE_JH7110_SYS=y CONFIG_SERIAL_8250_DW=y CONFIG_MMC_DW_STARFIVE=y CONFIG_DWMAC_STARFIVE=m)
   for CFG_OPTION in ${NECESSARY_CONFIG_OPTIONS[@]}; do
     grep "${CFG_OPTION}" .config 2> /dev/null || (echo "ERROR: config option ${CFG_OPTION} not found" && exit 1)
   done
