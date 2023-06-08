@@ -1,8 +1,9 @@
 pkgbase=linux-starfive-visionfive2
 pkgver=5.15.0.arch1
 pkgrel=3
+vendorrel='VF2_v3.0.4'
 pkgdesc='Linux'
-url="https://github.com/starfive-tech/linux/tree/VF2_v2.11.5"
+url="https://github.com/starfive-tech/linux/tree/${vendorrel}"
 arch=(riscv64)
 license=(GPL2)
 makedepends=(
@@ -34,7 +35,7 @@ export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EP
 
 prepare() {
   [[ -d "eswin_6600u" ]] || git clone --depth 1 https://github.com/eswincomputing/eswin_6600u
-  [[ -d "$_srcname" ]] || git clone --depth 1 --branch "VF2_v2.11.5" \
+  [[ -d "$_srcname" ]] || git clone --depth 1 --branch ${vendorrel} \
     "https://github.com/starfive-tech/linux.git" "$_srcname"
   cd $_srcname
 
