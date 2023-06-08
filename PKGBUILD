@@ -1,6 +1,6 @@
 pkgbase=linux-starfive-visionfive2
 pkgver=5.15.0.arch1
-pkgrel=3
+pkgrel=4
 vendorrel='VF2_v3.0.4'
 pkgdesc='Linux'
 url="https://github.com/starfive-tech/linux/tree/${vendorrel}"
